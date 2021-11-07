@@ -8,14 +8,14 @@ use Illuminate\Http\Response;
 use App\Http\Resources\CategoryCollection;
 use App\Http\Resources\CategoryResource;
 use App\Models\Notebook;
-use App\Lib\TranslitStr;
+use \Transliteration;
 
 class CategoryController extends Controller
 {
 
     /**
      * Api Meta info
-     * 
+     *
      * @param App\Models\Notebook $nb
      * @return array
      */
@@ -38,7 +38,7 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     *
      */
     public function index(Request $request)
     {
@@ -51,13 +51,13 @@ class CategoryController extends Controller
         ))->additional($this->metaInfo($nb));
     }
 
-    
+
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     *
      */
     public function store(Request $request)
     {
@@ -69,7 +69,7 @@ class CategoryController extends Controller
         auth()->user()->notebooks()->findOrFail($request->notebookId);
         $c = new Category();
         $c->title = $request->title;
-        $c->alias = TranslitStr::convert($request->title);
+        $c->alias = Transliteration::ukToEng($request->title);
         $c->notebook_id = (int)$request->notebookId;
         $c->save();
         return new CategoryResource($c);
@@ -81,7 +81,6 @@ class CategoryController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Category  $category
-     * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
     {
@@ -97,7 +96,7 @@ class CategoryController extends Controller
             abort(403);
         }
         $c->title = $request->title;
-        $c->alias = TranslitStr::convert($request->title);
+        $c->alias = Transliteration::ukToEng($request->title);
         $c->save();
         return new CategoryResource($c);
     }
@@ -106,7 +105,6 @@ class CategoryController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Category  $category
-     * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request)
     {

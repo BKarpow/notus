@@ -18,7 +18,7 @@ class NotebookPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return $user->id > 0;
     }
 
     /**
@@ -30,7 +30,7 @@ class NotebookPolicy
      */
     public function view(User $user, Notebook $notebook)
     {
-        //
+        return (int)$user->id === (int)$notebook->user_id;
     }
 
     /**
@@ -41,7 +41,7 @@ class NotebookPolicy
      */
     public function create(User $user)
     {
-        //
+        return $user->id > 0;
     }
 
     /**
@@ -53,7 +53,9 @@ class NotebookPolicy
      */
     public function update(User $user, Notebook $notebook)
     {
-        //
+        logger()->debug('Update notebook, user: '.$user->name);
+        return (int)$user->id === (int)$notebook->user_id;
+
     }
 
     /**
@@ -65,7 +67,8 @@ class NotebookPolicy
      */
     public function delete(User $user, Notebook $notebook)
     {
-        //
+        logger()->debug("Delete {$notebook->title}({$notebook->id}), user: {$user->id}");
+        return (int)$user->id === (int)$notebook->user_id;
     }
 
     /**
@@ -89,6 +92,6 @@ class NotebookPolicy
      */
     public function forceDelete(User $user, Notebook $notebook)
     {
-        //
+        return $this->create();
     }
 }
